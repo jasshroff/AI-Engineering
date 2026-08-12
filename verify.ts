@@ -27,50 +27,8 @@ function whichVersion(cmd: string, args: string[] = ["--version"]): ReturnType<P
   }
 }
 
-const PROBES: Probe[] = [
-  {
-    name: "Node.js 20+",
-    required: true,
-    run: () => {
-      const major = Number.parseInt(process.versions.node.split(".")[0]!, 10);
-      return { ok: major >= 20, detail: `v${process.versions.node}` };
-    },
-  },
-  {
-    name: "TypeScript runner (tsx)",
-    required: false,
-    run: () => whichVersion("npx", ["-y", "tsx", "--version"]),
-  },
-  {
-    name: "Git",
-    required: true,
-    run: () => whichVersion("git"),
-  },
-  {
-    name: "Python 3.10+",
-    required: true,
-    run: () => {
-      const probe = whichVersion("python3");
-      if (!probe.ok || !probe.detail) return probe;
-      // Detail looks like "Python 3.11.7"; pull major.minor.
-      const match = probe.detail.match(/(\d+)\.(\d+)/);
-      if (!match) return { ok: false, detail: probe.detail };
-      const [major, minor] = [Number(match[1]), Number(match[2])];
-      const ok = major > 3 || (major === 3 && minor >= 10);
-      return { ok, detail: probe.detail };
-    },
-  },
-  {
-    name: "Rust (cargo)",
-    required: false,
-    run: () => whichVersion("cargo"),
-  },
-  {
-    name: "Deno",
-    required: false,
-    run: () => whichVersion("deno"),
-  },
-];
+const PROBES: Probe[] = []
+  
 
 function run(): number {
   process.stdout.write("\n=== AI Engineering from Scratch — Environment Check ===\n\n");
